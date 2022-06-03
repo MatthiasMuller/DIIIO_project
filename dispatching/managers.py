@@ -2,7 +2,7 @@ from random import randint
 
 # Capacidad maxima del centro de consolidation
 from dispatching.types import Vehicle, Order
-from main import CENTER, VEHICLE_VOLUME, RADIUS, t_max
+from constants import CENTER, VEHICLE_VOLUME, RADIUS, t_max
 
 
 class LocationManager:
