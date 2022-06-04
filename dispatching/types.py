@@ -13,3 +13,9 @@ class Order(TypedDict):
 class Vehicle(TypedDict):
     id: int
     k: int
+    available: bool
+
+
+class State(TypedDict):
+    orders: list[Order]
+    vehicles: list[Vehicle]

@@ -1,8 +1,8 @@
 from random import randint
 
+from constants import CENTER, VEHICLE_VOLUME, RADIUS, t_max
 # Capacidad maxima del centro de consolidation
 from dispatching.types import Vehicle, Order
-from constants import CENTER, VEHICLE_VOLUME, RADIUS, t_max
 
 
 class LocationManager:
@@ -20,7 +20,8 @@ class VehicleManager:
         self.id += 1
         return {
             "id": _id,
-            "k": randint(1, VEHICLE_VOLUME),
+            "k": VEHICLE_VOLUME,
+            "available": True,
         }
 
 
@@ -28,10 +29,10 @@ class OrderManager:
     id = 0
     location = LocationManager()
 
-    def create_random(self) -> Order:
+    def create_random(self, t=0) -> Order:
         _id = self.id
         self.id += 1
-        t_e = randint(1, t_max - 1)
+        t_e = randint(t, t_max - 1)
         _vol = randint(1, VEHICLE_VOLUME)
         v = self.location.create_random()
         return {
