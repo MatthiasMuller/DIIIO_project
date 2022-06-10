@@ -1,6 +1,9 @@
+# Periods
+T: int = 4
+# Max capacity at consolidation center
 l_max: int = 10
 # Max window
-t_max: int = 10
+t_max: int = 4
 # Cap_vehiculo
 VEHICLE_VOLUME: int = 10
 # Center of the map
@@ -12,4 +15,4 @@ PRIMARY_DISPATCH_COST = 1
 # Cost of secondary vehicle dispatch
 SECONDARY_DISPATCH_COST = 5
 
-NO_DISPATCHED_ORDER_COST = 10
+CONSTANT_ORDER_VOLUME = 5

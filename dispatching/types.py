@@ -13,7 +13,7 @@ class Order(TypedDict):
 class Vehicle(TypedDict):
     id: int
     k: int
-    available: bool
+    remaining_periods: int
 
 
 class State(TypedDict):
