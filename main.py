@@ -79,6 +79,7 @@ def get_final_cost(s_t: State) -> [float, [Order]]:
 
 
 def c(s_t: State, t: int, new_orders_amount: int = None) -> [float, [Order]]:
+    print(t)
     if t == T:
         return get_final_cost(s_t)
     if new_orders_amount:
@@ -115,9 +116,14 @@ state = {
     "orders": [ord_m.create_random(t=0) for _ in range(initial_available_orders_amount)],
     "vehicles": available_vehicles
 }
-min_cost, min_cost_combination = c(state, t=0)
-print("INICIAL STATE", state)
-print(min_cost, min_cost_combination)
+
+for i in range(T):
+    min_cost, min_cost_combination = c(state, t=0)
+    decisions.append(min_cost_combination)
+    state["orders"] = get_not_dispatched_orders(state, min_cost_combination)
+
+
+
 
 end_time = time.time()
 
