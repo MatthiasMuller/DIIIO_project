@@ -4,11 +4,11 @@ import time
 from random import randint
 
 from constants import PRIMARY_DISPATCH_COST, SECONDARY_DISPATCH_COST, CONSTANT_ORDER_VOLUME, T
-from dispatching.managers import VehicleManager, OrderManager
+from dispatching.managers import VehicleManager, OrderManager, LocationManager
 # VehicleManager
 from dispatching.types import Order, Vehicle, State
-
 # MAIN
+from utils.plot import Plotter
 
 veh_m = VehicleManager()
 veh = veh_m.create_random()
@@ -16,12 +16,14 @@ print(f"Vehicle: {veh}")
 
 # OrderManager
 ord_m = OrderManager()
+loc_m = LocationManager()
 
 # plotter = Plotter()
 # plotter.plot(orders=orders, center=CENTER)
 
-initial_available_orders_amount = 5
-available_vehicles: list[Vehicle] = [veh_m.create_random() for _ in range(2)]
+initial_available_orders_amount = 3
+available_vehicles: list[Vehicle] = [veh_m.create_random() for _ in range(5)]
+plotter = Plotter()
 
 
 def get_cost(s_t, order_combination):
@@ -53,11 +55,18 @@ def get_used_vehicles(orders: [Order]) -> int:
     return used_vehicles_amount
 
 
+def get_available_vehicles(vehicles: [Vehicle]) -> [Vehicle]:
+    return [vehicle for vehicle in vehicles if vehicle["remaining_periods"] == 0]
+
+
 def get_decision_dispatch_cost(s_t: State, order_combination: [Order]) -> float:
     used_vehicles = get_used_vehicles(order_combination)
-    decision_dispatch_cost = min(used_vehicles, len(s_t["vehicles"])) * PRIMARY_DISPATCH_COST + \
-                             max(used_vehicles - len(s_t["vehicles"]), 0) * SECONDARY_DISPATCH_COST
-    return decision_dispatch_cost
+    routing_cost = loc_m.get_daganzo_cost(order_combination)
+    available_primary_vehicles = get_available_vehicles(s_t["vehicles"])
+    primary_available_vehicles_amount = len(available_primary_vehicles)
+    decision_dispatch_cost = min(used_vehicles, primary_available_vehicles_amount) * PRIMARY_DISPATCH_COST + \
+                             max(used_vehicles - primary_available_vehicles_amount, 0) * SECONDARY_DISPATCH_COST
+    return decision_dispatch_cost + routing_cost
 
 
 def get_not_dispatched_orders(s_t: State, order_combination: [Order]) -> [Order]:
@@ -117,13 +126,12 @@ state = {
     "vehicles": available_vehicles
 }
 
-for i in range(T):
-    min_cost, min_cost_combination = c(state, t=0)
-    decisions.append(min_cost_combination)
-    state["orders"] = get_not_dispatched_orders(state, min_cost_combination)
+min_cost, min_cost_combination = c(state, t=0)
+print(min_cost, min_cost_combination)
+decisions.append(min_cost_combination)
+state["orders"] = get_not_dispatched_orders(state, min_cost_combination)
 
-
-
+# plotter.plot(center=CENTER, orders=state["orders"])
 
 end_time = time.time()
 
