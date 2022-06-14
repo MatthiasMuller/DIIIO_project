@@ -3,7 +3,7 @@ import math
 import time
 from random import randint
 
-from constants import PRIMARY_DISPATCH_COST, SECONDARY_DISPATCH_COST, CONSTANT_ORDER_VOLUME, T, CENTER
+from constants import PRIMARY_DISPATCH_COST, SECONDARY_DISPATCH_COST, CONSTANT_ORDER_VOLUME, T, l_max
 from dispatching.managers import VehicleManager, OrderManager, LocationManager
 # VehicleManager
 from dispatching.types import Order, Vehicle, State
@@ -17,6 +17,7 @@ print(f"Vehicle: {veh}")
 # OrderManager
 ord_m = OrderManager()
 loc_m = LocationManager()
+plot = True
 
 # plotter = Plotter()
 # plotter.plot(orders=orders, center=CENTER)
@@ -106,8 +107,17 @@ def decrease_remaining_periods_vehicles(vehicles: [Vehicle]):
     return vehicles_list
 
 
+def check_max_consolidation_center_capacity(orders: [Order]):
+    used_capacity = 0
+    for order in orders:
+        used_capacity += order["l"]
+    return used_capacity > l_max
+
+
 def c(s_t: State, t: int, new_orders_amount: int = None) -> [float, [Order]]:
-    print(s_t["vehicles"])
+    if check_max_consolidation_center_capacity(s_t["orders"]):
+        return math.inf, []
+
     s_t = {
         "orders": s_t["orders"],
         "vehicles": decrease_remaining_periods_vehicles(s_t["vehicles"])
@@ -147,7 +157,7 @@ start_time = time.time()
 
 decisions = []
 state = {
-    "orders": [ord_m.create_random(t=0) for _ in range(initial_available_orders_amount)],
+    "orders": [],
     "vehicles": initial_available_vehicles
 }
 
@@ -157,7 +167,8 @@ for t in range(0, T):
     min_cost, min_cost_combination = c(state, t=t)
     print(min_cost, min_cost_combination)
     decisions.append(min_cost_combination)
-    plotter.plot(center=CENTER, orders=state["orders"])
+    if plot:
+        plotter.plot(orders=min_cost_combination)
     state["orders"] = get_not_dispatched_orders(state, min_cost_combination)
     state["vehicles"] = increase_remaining_periods_vehicles(state["vehicles"], min_cost_combination)
 

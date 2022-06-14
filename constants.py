@@ -1,9 +1,9 @@
 # Periods
-T: int = 5
+T: int = 6
 # Max capacity at consolidation center
-l_max: int = 10
+l_max: int = 20
 # Max window
-t_max: int = 5
+t_max: int = 6
 # Cap_vehiculo
 VEHICLE_VOLUME: int = 10
 # Center of the map
