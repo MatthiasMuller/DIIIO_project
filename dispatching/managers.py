@@ -4,7 +4,7 @@ from random import randint, random
 from constants import CENTER, VEHICLE_VOLUME, RADIUS, t_max, CONSTANT_ORDER_VOLUME, T
 # Capacidad maxima del centro de consolidation
 from dispatching.types import Vehicle, Order
-from routing.daganzo import daganzo_optimize
+from routing.daganzo import clarke_and_wrights_optimize
 
 
 class LocationManager:
@@ -24,18 +24,7 @@ class LocationManager:
     def get_daganzo_cost(self, orders: []):
         radius = self.get_max_circular_radius_distance_in_list(orders)
         area = self.get_area(radius)
-        return daganzo_optimize(radius, len(orders), VEHICLE_VOLUME, area)
-
-
-class OrderLocationManager:
-    def create_random(self):
-        alpha = 2 * math.pi * random()
-        # random radius
-        r = RADIUS * math.sqrt(random())
-        # calculating coordinates
-        x = r * math.cos(alpha) + CENTER[0]
-        y = r * math.sin(alpha) + CENTER[1]
-        return x, y
+        return clarke_and_wrights_optimize(radius, len(orders), VEHICLE_VOLUME, area)
 
 
 class VehicleManager:
@@ -49,6 +38,17 @@ class VehicleManager:
             "k": VEHICLE_VOLUME,
             "remaining_periods": 0,
         }
+
+
+class OrderLocationManager:
+    def create_random(self):
+        alpha = 2 * math.pi * random()
+        # random radius
+        r = RADIUS * math.sqrt(random())
+        # calculating coordinates
+        x = r * math.cos(alpha) + CENTER[0]
+        y = r * math.sin(alpha) + CENTER[1]
+        return x, y
 
 
 class OrderManager:

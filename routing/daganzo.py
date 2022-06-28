@@ -4,7 +4,7 @@ CONSTANT_PRODUCT_1 = 1.189
 CONSTANT_PRODUCT_2 = 0.68
 
 
-def daganzo_optimize(radius, number_of_points, capacity_vehicles, area_delivery):
+def clarke_and_wrights_optimize(radius, number_of_points, capacity_vehicles, area_delivery):
     """
     This is the main function of the daganzo routing algorithm.
     """

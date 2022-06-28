@@ -14,5 +14,5 @@ RADIUS = 0.03
 PRIMARY_DISPATCH_COST = 0.05
 # Cost of secondary vehicle dispatch
 SECONDARY_DISPATCH_COST = 0.5
-
+# Order Volume; if None, it will be calculated.
 CONSTANT_ORDER_VOLUME = 5
